@@ -1,5 +1,6 @@
+import { Link } from "expo-router";
 import React, { useState } from 'react';
-import { Modal, View, Text, Switch, StyleSheet, TextInput, ScrollView } from 'react-native';
+import { Modal, View, Text, Switch, StyleSheet, TextInput, ScrollView, TouchableOpacity } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { Button } from 'react-native';
 import AppBar from '../components/appbar';
@@ -175,74 +176,106 @@ const Diagnosticar = () => {
             <Switch value={vomitos} onValueChange={setVomitos} />
           </View>
 
-           <View style={styles.symptoms}>
-                                  <Text>Sangrado:</Text>
-                                  <Switch value={sangrado} onValueChange={setSangrado} />
-          
-                              </View >
-                              <View style={styles.symptoms}>
-                                  <Text>Dificultad para respirar:</Text>
-                                  <Switch value={dificultadRespirar} onValueChange={setDificultadRespirar} />
-          
-                              </View >
-          
-                              <View style={styles.ageContainer}>
-                                  <Text style={styles.ageText}>Edad:</Text>
-                                  <Picker
-                                      selectedValue={edad}
-                                      onValueChange={(itemValue) => setEdad(itemValue)}
-                                      style={styles.picker}
-                                  >
-                                      {Array.from({ length: 99 }, (_, index) => (
-                                          <Picker.Item key={index + 1} label={`${index + 1} años`} value={`${index + 1}`} />
-                                      ))}
-                                  </Picker>
-                              </View>
-          
-                              <View style={styles.zoneContainer}>
-                                  <Text style={styles.zoneText}>Zona:</Text>
-                                  <Picker
-                                      selectedValue={zona}
-                                      onValueChange={(itemValue) => setZona(itemValue)}
-                                      style={styles.picker}
-                                  >
-                                      {opcionesZonas.map((opcion, index) => (
-                                          <Picker.Item key={index} label={opcion.label} value={opcion.value} />
-                                      ))}
-                                  </Picker>
-                              </View>
+          <View style={styles.symptoms}>
+            <Text>Sangrado:</Text>
+            <Switch value={sangrado} onValueChange={setSangrado} />
+
+          </View >
+          <View style={styles.symptoms}>
+            <Text>Dificultad para respirar:</Text>
+            <Switch value={dificultadRespirar} onValueChange={setDificultadRespirar} />
+
+          </View >
+
+          <View style={styles.ageContainer}>
+            <Text style={styles.ageText}>Edad:</Text>
+            <Picker
+              selectedValue={edad}
+              onValueChange={(itemValue) => setEdad(itemValue)}
+              style={styles.picker}
+            >
+              {Array.from({ length: 99 }, (_, index) => (
+                <Picker.Item key={index + 1} label={`${index + 1} años`} value={`${index + 1}`} />
+              ))}
+            </Picker>
+          </View>
+
+          <View style={styles.zoneContainer}>
+            <Text style={styles.zoneText}>Zona:</Text>
+            <Picker
+              selectedValue={zona}
+              onValueChange={(itemValue) => setZona(itemValue)}
+              style={styles.picker}
+            >
+              {opcionesZonas.map((opcion, index) => (
+                <Picker.Item key={index} label={opcion.label} value={opcion.value} />
+              ))}
+            </Picker>
+          </View>
 
         </View>
         <Button title="Generar y Enviar JSON" onPress={generarJSON} />
         <View style={styles.container}>
 
 
-          <Modal visible={visibleModal} transparent animationType="slide">
-            <View style={styles.modalContainer}>
-              <View style={[styles.modalContent, { borderColor: getBorderColor() }]}>
-                <Text style={styles.modalTitle}>Resultado de la Predicción</Text>
-                <Text style={styles.predictionText}>
-                  {prediction && prediction[1] === 1
-                    ? "Tiene dengue"
+        <Modal visible={visibleModal} transparent animationType="slide">
+    <View style={styles.modalContainer}>
+        <View style={[styles.modalContent, { borderColor: getBorderColor() }]}>
+            <Text style={styles.modalTitle}>El Diagnóstico es</Text>
+            <Text
+                style={[
+                    styles.predictionText,
+                    {
+                        color:
+                            prediction && prediction[1] === 1
+                                ? "#ffa500" // Naranja para "Tiene dengue"
+                                : prediction && prediction[2] === 1
+                                ? "#ff3333" // Rojo para "Tiene dengue grave"
+                                : "#00cc66", // Verde para "No tiene dengue"
+                    },
+                ]}
+            >
+                {prediction && prediction[1] === 1
+                    ? "Tiene dengue. Es importante que tome precauciones adicionales y consulte con un médico."
                     : prediction && prediction[2] === 1
-                      ? "Tiene dengue grave"
-                      : "No tiene dengue"}
-                </Text>
-                <Button title="Cerrar" onPress={() => setVisibleModal(false)} />
-              </View>
-            </View>
-          </Modal>
+                    ? "Tiene dengue grave. Necesita atención médica inmediata."
+                    : "No tiene dengue. Recuerde mantener las medidas preventivas para evitar infecciones."}
+            </Text>
+            <TouchableOpacity
+                style={[
+                    styles.button,
+                    {
+                        backgroundColor:
+                            prediction && prediction[1] === 1
+                                ? "#ffa500" // Naranja para "Tiene dengue"
+                                : prediction && prediction[2] === 1
+                                ? "#ff3333" // Rojo para "Tiene dengue grave"
+                                : "#00cc66", // Verde para "No tiene dengue"
+                    },
+                ]}
+                onPress={() => setVisibleModal(false)}
+            >
+                 <Link href={`/Sugerencias`} style={styles.buttonText}>
+                    Cerrar
+                  </Link>
+            </TouchableOpacity>
+        </View>
+    </View>
+</Modal>
 
 
-
+ 
         </View>
 
       </ScrollView>
     </View>
+
   );
+
 };
 
 const styles = StyleSheet.create({
+
   container: {
     flexGrow: 1,
     padding: 20,
@@ -260,15 +293,15 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 3,
     elevation: 2, // Sombra ligera para Android
-},
-zoneText: {
+  },
+  zoneText: {
     fontSize: 16, // Tamaño de fuente mediano
     fontWeight: "bold",
     color: "#333", // Gris oscuro para el texto
     marginBottom: 10, // Espacio debajo del título
     textAlign: "left", // Alineación a la izquierda
-},
-ageContainer: {
+  },
+  ageContainer: {
     marginVertical: 15, // Espacio arriba y abajo para separarlo del resto
     marginHorizontal: 20, // Márgenes laterales para centrar
     padding: 10, // Espaciado interno
@@ -280,14 +313,14 @@ ageContainer: {
     shadowOpacity: 0.1,
     shadowRadius: 3,
     elevation: 2, // Sombra ligera
-},
-ageText: {
+  },
+  ageText: {
     fontSize: 16, // Texto mediano
     fontWeight: "bold",
     color: "#333", // Gris oscuro
     marginBottom: 10, // Espacio debajo del título
     textAlign: "left", // Alineación hacia la izquierda
-},
+  },
 
   input: {
     height: 40,
@@ -330,7 +363,7 @@ ageText: {
     paddingVertical: 10,
     borderRadius: 10,
     marginVertical: 10,
-  
+
     paddingHorizontal: 10, // Añade algo de ancho
   },
   buttonText: {
@@ -370,6 +403,12 @@ ageText: {
     marginBottom: 20,
     textAlign: "center",
   },
+  buttonText: {
+    color: "white",
+    fontSize: 16,
+    fontWeight: "bold",
+    textAlign: "center", // Asegura que el texto esté centrado
+},
 });
 
 

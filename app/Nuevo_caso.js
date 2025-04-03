@@ -46,14 +46,7 @@ const Nuevo_caso = () => {
     const [edad, setEdad] = useState('');
     const [zona, setZona] = useState("0.01")
     const [fecha, setFecha] = useState("2000-01-01");
-    const getBorderColor = () => {
-        if (!prediction) return "transparent"; // Sin predicción, sin color
-
-        if (prediction[1] === 1) return "yellow"; // Si es dengue
-        if (prediction[2] === 1) return "red"; // Si es dengue grave
-
-        return "green"; // Si no tiene dengue
-    };
+    
 
 
 
@@ -126,16 +119,7 @@ const Nuevo_caso = () => {
             console.error("Error al enviar los datos:", error.message);
         }
     };
-    const mostrarPrediccion = (prediction) => {
-        // Convertir la predicción en un mensaje amigable
-        const resultados = ["No tiene dengue", "Tiene dengue", "Tiene dengue grave"];
-        const mensaje = prediction
-            .map((valor, index) => (valor === 1 ? resultados[index] : null))
-            .filter((resultado) => resultado !== null)
-            .join(", ");
-
-        alert(`Resultado de la predicción: ${mensaje}`);
-    };
+  
     return (
         <View>
 

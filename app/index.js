@@ -1,7 +1,8 @@
 
 import { View,Image, StyleSheet, Text } from "react-native";
-import Main from "../components/Main";
+
 import AppBar from "../components/appbar";
+import Main from "../components/main";
 
 export default function Index(){
 
@@ -10,7 +11,7 @@ export default function Index(){
           <View >
          
             <AppBar></AppBar>
-            <Main></Main>
+           <Main></Main>
                 
           </View>    
         
