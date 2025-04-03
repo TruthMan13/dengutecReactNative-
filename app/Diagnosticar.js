@@ -62,8 +62,8 @@ const Diagnosticar = () => {
       bleeding: sangrado ? 1 : 0,
       respiratory_distress: dificultadRespirar ? 1 : 0,
       lethargy: letargo ? 1 : 0, // Puedes ajustar si es otro estado que define "lethargy"
-      age: edad ? parseFloat(edad) : 0, // Convertir la edad a flotante
-      region: zona === "centro" ? 0.025 : zona === "norte" ? 0.050 : 0.075, // Ejemplo de asignación a valores según zona
+      age: edad ? parseFloat(edad) / 100 : 0,  // Convertir la edad a flotante
+      region: parseFloat(zona) // Ejemplo de asignación a valores según zona
     };
 
     // Convertir el objeto en un JSON
@@ -371,22 +371,6 @@ ageText: {
     textAlign: "center",
   },
 });
-const ZonaSelector = ({ value, onChange }) => {
-  return (
-    <View style={styles.zonaContainer}>
-      <Text>Zona:</Text>
-      <Picker
-        selectedValue={value}
-        onValueChange={onChange}
-        style={styles.zonaPicker}
-      >
-        <Picker.Item label="Centro" value="centro" />
-        <Picker.Item label="Norte" value="norte" />
-        <Picker.Item label="Sur" value="sur" />
-      </Picker>
-    </View>
-  );
-};
 
 
 export default Diagnosticar;
